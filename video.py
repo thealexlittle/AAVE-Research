@@ -12,5 +12,5 @@ def download_subs(url, lang="en"):
     with youtube_dl.YoutubeDL(opts) as yt:
         yt.download([url])
 
-url = 'https://www.youtube.com/watch?v=UfzMuQfZOaM'
+url = 'https://www.youtube.com/watch?v=rudHe4zdwUc'
 download_subs(url)
