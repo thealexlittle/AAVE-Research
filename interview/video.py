@@ -2,7 +2,7 @@ import youtube_dl
 
 def download_subs(url, lang="en"):
     opts = {
-        "skip_download": True,
+        "skip_download": False,
         "writesubtitles": "%(name)s.vtt",
         "writeautomaticsub": "%(name)s_auto.vtt",
         "subtitlelangs": lang,
