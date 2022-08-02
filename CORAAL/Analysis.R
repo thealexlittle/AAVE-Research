@@ -24,11 +24,13 @@ p.be <- "(^| )(?:I|[Ww]e|[Hh]e|[Tt]hey|[Ss]he|[Yy]ou|[Tt]hat|[Ii]t) be( |$)"
 p.contractions <- "(?:am |[sedoi])n(?:'t|ot)"
 # p.past.reg <- "([Ww]eren't|[Ww]asn't|[Cc]an't)"
 p.reductions <- "musta|woulda|shoulda|mighta|gonna|hafta|tryna|sposta|finna|gotta|wanna|oughta|cause|til"
+p.aint <- "ain't"
 
 #Search CORAAL for utterances
-be.utts <- coraal.search(p.be, src)
+be.utts <- coraal.search(p.be)
 contraction.utts <- coraal.search(p.contractions)
 red.utts <- coraal.search(p.reductions)
+aint.utts <- coraal.search(p.aint)
 
 #Helper function to count amount of times a speaker has uttered a given utterance 
 query2col <- function(res){
@@ -41,7 +43,8 @@ query2col <- function(res){
 # Add Amount of Utterances of each column to metadata
 md <- md %>% mutate(be = query2col(be.utts),
                     contra = query2col(contraction.utts),
-                    red = query2col(red.utts)
+                    red = query2col(red.utts),
+                    aint = query2col(aint.utts)
                     )
 
 # Create Extra Columns For Data Ratios 
@@ -57,3 +60,11 @@ md.children.nt <- md %>% filter(Age <= 20)
 
 md.young.birth <- md %>% filter(Year.of.Birth <= 1962)
 md.old.birth <- md %>% filter(Year.of.Birth > 1962)
+
+summary(md.recent.int)
+
+ggplot(md.recent.int, mapping = aes(Year.of.Birth, be)) + geom_point()
+ggplot(md.old.int, mapping = aes(Year.of.Birth, be)) + geom_point()
+
+ggplot(md.old.int, mapping = aes(Age, be)) + geom_point()
+ggplot(md.recent.int, mapping = aes(Age, be)) + geom_point()
