@@ -5,15 +5,18 @@ library(tidyverse)
 this.dir <- dirname(rstudioapi::getSourceEditorContext()$path)
 setwd(this.dir)
 
-
 # Load In CORAAL Dataset
 # Only Load in DC because that is the only part that is relevant
 # Also pauses and turns are irrelevant
 
+# I think I'm getting rate limited 
 source('http://lingtools.uoregon.edu/coraal/explorer/R/CORAAL_web.R')
-coraal <- coraal.webget.data("DC", no.pauses = TRUE, turns = FALSE)
-metadat <- coraal.webget.meta("DC")
 
+coraal <- coraal.webget.data("DC", no.pauses = TRUE)
+md <- coraal.webget.meta("DC")
+
+# Get Rid of Useless Metadata Info
+md <- md %>% select(!c(2,3,5:10,17,22,23,41:49, 52))
 
 
 # Create Regex Patterns for retrieving features
@@ -22,22 +25,35 @@ p.contractions <- "(?:am |[sedoi])n(?:'t|ot)"
 # p.past.reg <- "([Ww]eren't|[Ww]asn't|[Cc]an't)"
 p.reductions <- "musta|woulda|shoulda|mighta|gonna|hafta|tryna|sposta|finna|gotta|wanna|oughta|cause|til"
 
-be.utts <- coraal.search(p.be)
+#Search CORAAL for utterances
+be.utts <- coraal.search(p.be, src)
 contraction.utts <- coraal.search(p.contractions)
 red.utts <- coraal.search(p.reductions)
 
-t <- transmute(metadat, sum(be.utts$Spkr == metadat$CORAAL.Spkr))
-
-count_occ_for_spkr <- function(res){
-  res.col <- lapply(metadat$CORAAL.Spkr, FUN = function(s){
+#Helper function to count amount of times a speaker has uttered a given utterance 
+query2col <- function(res){
+  r <- lapply(md$CORAAL.Spkr, FUN = function(s){
     sum(res$Spkr == s)
-  }) 
+  })
+  r <- as.numeric(r) 
 }
 
+# Add Amount of Utterances of each column to metadata
+md <- md %>% mutate(be = query2col(be.utts),
+                    contra = query2col(contraction.utts),
+                    red = query2col(red.utts)
+                    )
 
-# Add Columns to Metadata
-
-
+# Create Extra Columns For Data Ratios 
+# utt / word_count 
+# utt / total utts
 
 # Create Subcategories Based on Metadata
-md.recent <- filter(md, Year.of.Interview > 2000)
+md.recent.int <- md %>% filter(Year.of.Interview > 2000)
+md.old.int <- md %>% filter(Year.of.Interview <= 2000)
+
+md.adults.int <- md %>% filter(Age > 20)
+md.children.nt <- md %>% filter(Age <= 20)
+
+md.young.birth <- md %>% filter(Year.of.Birth <= 1962)
+md.old.birth <- md %>% filter(Year.of.Birth > 1962)
