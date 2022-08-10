@@ -1,5 +1,8 @@
 # Library Imports
 library(tidyverse)
+library(lme4)
+
+theme_set(theme_bw())
 
 
 this.dir <- dirname(rstudioapi::getSourceEditorContext()$path)
@@ -88,18 +91,14 @@ ggplot(md.recent.int, mapping = aes(Age, be)) + geom_point()
 
 #Plot 4: Older interviewees (by DOV) grouped by interview 
 
-ggplot(md.recent.int, aes(Age)) + geom_density()
+ggplot(md.recent.int, aes(Age)) + geom_histogram()
 
-# Plotting multiple values on a graph
-g1 <- geom_point(aes(x = md.old.int$Age, y = md.old.int$be.rat.lines, color='Interviews before 2000', ))
-g2 <- geom_point(aes(x= md.recent.int$Age, y = md.recent.int$be.rat.lines, color='Interviews after 2000'))
-ggplot() + g1 + g2 + labs(title="Usage of Invariant 'be' given a subject's age",
-                          x = "Age When Interviewed",
-                          y = "Ratio of be to ")
 
+#Plot use of be in interviewees of a certain age between 1960s and 2010s
 md.old.int$InterviewTime = "before 2000"
 md.recent.int$InterviewTime = "after 2000"
 md.combo = bind_rows(md.old.int,md.recent.int)
+
 ggplot(md.combo, aes(x = Age, y = be.rat.lines, color=InterviewTime)) +
   geom_point() +
   geom_smooth(method="lm") +
@@ -107,40 +106,31 @@ ggplot(md.combo, aes(x = Age, y = be.rat.lines, color=InterviewTime)) +
        x = "Age When Interviewed",
        y = "Ratio of be to ")
 
-theme_set(theme_bw())
-  
-  geom_point(aes(x = md.old.int$Age, y = md.old.int$be.rat.lines, color='Interviews before 2000', ))
-g2 <- geom_point(aes(x= md.recent.int$Age, y = md.recent.int$be.rat.lines, color='Interviews after 2000'))
-ggplot() + g1 + g2 + labs(title="Usage of Invariant 'be' given a subject's age",
-                          x = "Age When Interviewed",
-                          y = "Ratio of be to ")
+
+# Plotting Birth Age and Usage of Be in recent interviews
+ggplot(md.recent.int, aes(x = Year.of.Birth, y = be.rat.lines)) +
+  geom_point() +
+  geom_smooth(method = 'lm') +
+  labs(title = "Usage of Be compared to Year of birth in rececnt interviews",
+        x = "Year of Birth",
+        y = "Useage of Be")
+
+# Plot Year of birth against reduction usage
+ggplot(md.combo, aes(x = Year.of.Birth, y = red.rat.lines, color=InterviewTime)) +
+  geom_point() +
+  geom_smooth(method = 'lm') +
+  labs(title="Usage of reduction given a subject's age", 
+       x = "Birth Year of Subject", 
+       y = "Ratio of reduction by lines")
+
+# Plot use of Year of birth against aint usage
+ggplot(md.combo, aes(x = Year.of.Birth, y = aint.rat.lines, color=InterviewTime)) +
+  geom_point() +
+  geom_smooth(method = 'lm') +
+  labs(title="Usage of aint given a subject's age", 
+       x = "Birth Year of Subject", 
+       y = "Ratio of 'aint' usage by lines")
 
 
 
-# Plotting Birth Age and Usage
-g3 <- geom_point(aes(x = md.recent.int$Year.of.Birth, y = md.recent.int$be.rat.lines, color="Recent Interviews"))
-g4 <- geom_point(aes(x = md.old.int$Year.of.Birth, y = md.old.int$be.rat.lines, color="Old Interviews"))
-ggplot() + g3 + g4 + labs(title="Rate of Invariant 'be' per line given a subject's age",
-                          x = "Age of Subject",
-                          y = "Amount of 'be' usage ")
 
-g5 <- geom_point( aes(x = md$Year.of.Birth, y = md$be.rat.lines))
-ggplot() + g5 + labs(title="Usage of Invariant 'be' given a subject's age",
-                     x = "Birth Year of Subject",
-                     y = "Ratio of 'be' usage by lines")
-# Plot  
-
-g6 <- geom_point( aes(x = md$Year.of.Birth, y = md$red.rat.lines))
-ggplot() + g6 + labs(title="Usage of reduction given a subject's age",
-                     x = "Birth Year of Subject",
-                     y = "Ratio of 'be' usage by lines")
-
-g7 <- geom_point( aes(x = md$Year.of.Birth, y = md$aint.rat.lines))
-ggplot() + g7 + labs(title="Usage of ain't given a subject's age",
-                     x = "Birth Year of Subject",
-                     y = "Ratio of 'be' usage by lines")
-
-g8 <- geom_point( aes(x = md.recent.int$Age, y = md.recent.int$be.rat.lines))
-ggplot() + g8 + labs(title="Usage of be given a subject's age (recent)",
-                     x = "Birth Year of Subject",
-                     y = "Ratio of 'be' usage by lines")
