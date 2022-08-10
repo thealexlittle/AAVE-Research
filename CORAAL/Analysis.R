@@ -28,12 +28,17 @@ p.contractions <- "(?:am |[sedoi])n(?:'t|ot)"
 # p.past.reg <- "([Ww]eren't|[Ww]asn't|[Cc]an't)"
 p.reductions <- "musta|woulda|shoulda|mighta|gonna|hafta|tryna|sposta|finna|gotta|wanna|oughta|cause|til"
 p.aint <- "ain't"
+p.n_word <- "nigga"
 
 #Search CORAAL for utterances
-be.utts <- coraal.search(p.be)
+# be.utts <- coraal.search(p.be)
 contraction.utts <- coraal.search(p.contractions)
 red.utts <- coraal.search(p.reductions)
 aint.utts <- coraal.search(p.aint)
+n_word.utts <- coraal.search(p.n_word)
+
+# Read in be utts from handcoded csv
+be.utts <- read.csv('b.csv')
 
 #Helper function to count amount of times a speaker has uttered a given utterance 
 query2col <- function(res){
@@ -48,6 +53,7 @@ md <- md %>% mutate(be = query2col(be.utts),
                     contra = query2col(contraction.utts),
                     red = query2col(red.utts),
                     aint = query2col(aint.utts),
+                    n_word = query2col(n_word.utts),
                     lines.Count = query2col(coraal)
                     )
 
@@ -58,10 +64,12 @@ md <- md %>% mutate(be.rat.lines = be / lines.Count,
                     contra.rat.lines = contra / lines.Count,
                     red.rat.lines = red / lines.Count,
                     aint.rat.lines = aint / lines.Count,
+                    n_word.rat.lines = n_word / lines.Count,
                     be.rat.words = be / CORAAL.Word.Count,
                     contra.rat.words = contra / CORAAL.Word.Count,
                     red.rat.words = red / CORAAL.Word.Count,
-                    aint.rat.words = aint / CORAAL.Word.Count
+                    aint.rat.words = aint / CORAAL.Word.Count,
+                    n_word.rat.words = n_word / CORAAL.Word.Count
 )
 
 
@@ -99,16 +107,17 @@ md.old.int$InterviewTime = "before 2000"
 md.recent.int$InterviewTime = "after 2000"
 md.combo = bind_rows(md.old.int,md.recent.int)
 
+# Plot Age when interviewed and usage of Be
 ggplot(md.combo, aes(x = Age, y = be.rat.lines, color=InterviewTime)) +
   geom_point() +
   geom_smooth(method="lm") +
   labs(title="Usage of Invariant 'be' given a subject's age",
        x = "Age When Interviewed",
-       y = "Ratio of be to ")
+       y = "Ratio of be to lines")
 
 
-# Plotting Birth Age and Usage of Be in recent interviews
-ggplot(md.recent.int, aes(x = Year.of.Birth, y = be.rat.lines)) +
+# Plotting Birth Age and Usage of Be
+ggplot(md.combo, aes(x = Year.of.Birth, y = be.rat.lines, color=InterviewTime)) +
   geom_point() +
   geom_smooth(method = 'lm') +
   labs(title = "Usage of Be compared to Year of birth in rececnt interviews",
@@ -130,6 +139,16 @@ ggplot(md.combo, aes(x = Year.of.Birth, y = aint.rat.lines, color=InterviewTime)
   labs(title="Usage of aint given a subject's age", 
        x = "Birth Year of Subject", 
        y = "Ratio of 'aint' usage by lines")
+
+#Plot of of year of birth against n_word usage
+ggplot(md.combo, aes(x = Year.of.Birth, y = n_word.rat.lines, color=InterviewTime)) +
+  geom_point() +
+  geom_smooth(method = 'lm') +
+  labs(title="Usage of n given a subject's age", 
+       x = "Birth Year of Subject", 
+       y = "Ratio of n usage by lines")
+
+
 
 
 
