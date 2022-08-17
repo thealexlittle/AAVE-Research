@@ -110,7 +110,9 @@ ggplot(md.combo, aes(x = Age, y = be.rat.lines, color=InterviewTime)) +
        x = "Age When Interviewed",
        y = "Ratio of be to lines")
 lm.age.be <- lm(Age ~ be.rat.lines, data = md.combo )
-summary(lm1=.age.be)
+summary(lm.age.be)
+
+ggsave('plots/UsageOf_Be_AgainstInterviewAge.png')
 
 # Plotting Birth Age and Usage of Be
 ggplot(md.combo, aes(x = Year.of.Birth, y = be.rat.lines, color=InterviewTime)) +
@@ -119,6 +121,8 @@ ggplot(md.combo, aes(x = Year.of.Birth, y = be.rat.lines, color=InterviewTime)) 
   labs(title = "Usage of Be compared to Year of Birth",
         x = "Year of Birth",
         y = "Useage of Be")
+
+ggsave('plots/UsageOf_Be_AgainstBirthYear.png')
 
 lm.DOB.be <- lm(Age ~ be.rat.lines, data = md.combo )
 summary(lm.DOB.be)
@@ -131,6 +135,8 @@ ggplot(md.combo, aes(x = Year.of.Birth, y = red.rat.lines, color=InterviewTime))
        x = "Birth Year of Subject", 
        y = "Ratio of reduction by lines")
 
+ggsave('plots/UsageOf_Red_AgainstBirthYear.png')
+
 ggplot(md.combo, aes(x = Age, y = red.rat.lines, color=InterviewTime)) +
   geom_point() +
   geom_smooth(method = 'lm') +
@@ -141,6 +147,8 @@ ggplot(md.combo, aes(x = Age, y = red.rat.lines, color=InterviewTime)) +
 lm.DOB.red <- lm(Age ~ be.rat.lines, data = md.combo )
 summary(lm.DOB.red)
 
+ggsave('plots/UsageOf_Red_AgainstInterviewAge.png')
+
 # Plot use of Year of birth against aint usage
 ggplot(md.combo, aes(x = Year.of.Birth, y = aint.rat.lines, color=InterviewTime)) +
   geom_point() +
@@ -148,6 +156,8 @@ ggplot(md.combo, aes(x = Year.of.Birth, y = aint.rat.lines, color=InterviewTime)
   labs(title="Usage of aint given a subject's age", 
        x = "Birth Year of Subject", 
        y = "Ratio of 'aint' usage by lines")
+
+ggsave('plots/UsageOf_Aint_AgainstBirthYear.png')
 
 ggplot(md.combo, aes(x = Age, y = aint.rat.lines, color=InterviewTime)) +
   geom_point() +
@@ -158,6 +168,8 @@ ggplot(md.combo, aes(x = Age, y = aint.rat.lines, color=InterviewTime)) +
 
 lm.DOB.aint<- lm(Age ~ be.rat.lines, data = md.combo )
 summary(lm.DOB.aint)
+
+ggsave('plots/UsageOf_Aint_AgainstInterviewAge.png')
 
 
 
