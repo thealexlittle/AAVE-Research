@@ -94,7 +94,8 @@ ggplot(md.recent.int, mapping = aes(Age, be)) + geom_point()
 
 #Plot 4: Older interviewees (by DOV) grouped by interview 
 
-ggplot(md.recent.int, aes(Age)) + geom_histogram()
+ggplot(md, aes(Age)) + geom_histogram()
+ggplot(md, aes(Year.of.Interview)) + geom_histogram()
 
 
 #Plot use of be in interviewees of a certain age between 1960s and 2010s
@@ -109,7 +110,7 @@ ggplot(md.combo, aes(x = Age, y = be.rat.lines, color=InterviewTime)) +
   labs(title="Usage of Invariant Be given a subject's age when interviewed",
        x = "Age When Interviewed",
        y = "Ratio of be to lines")
-lm.age.be <- lm(Age ~ be.rat.lines, data = md.combo )
+lm.age.be <- lm(be.rat.lines ~ Age * InterviewTime, data = md.combo)
 summary(lm.age.be)
 
 ggsave('plots/UsageOf_Be_AgainstInterviewAge.png', width = 6, height = 3)
