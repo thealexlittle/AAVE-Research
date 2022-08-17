@@ -26,7 +26,7 @@ md <- md %>% select(!c(2,3,5:10,17,22,23,41:49, 52))
 p.be <- "(^| )(?:I|[Ww]e|[Hh]e|[Tt]hey|[Ss]he|[Yy]ou|[Tt]hat|[Ii]t) be( |$)"
 p.contractions <- "(?:am |[sedoi])n(?:'t|ot)"
 # p.past.reg <- "([Ww]eren't|[Ww]asn't|[Cc]an't)"
-p.reductions <- "musta|woulda|shoulda|mighta|gonna|hafta|tryna|sposta|finna|gotta|wanna|oughta|cause|til"
+p.reductions <- "musta|woulda|shoulda|mighta|gonna|hafta|tryna|sposta|finna|gotta|wanna|oughta|cause|til|'em|lemme|whatch[au]|gotcha"
 p.aint <- "ain't"
 
 #Search CORAAL for utterances
@@ -106,13 +106,13 @@ md.combo = bind_rows(md.old.int,md.recent.int)
 ggplot(md.combo, aes(x = Age, y = be.rat.lines, color=InterviewTime)) +
   geom_point() +
   geom_smooth(method="lm") +
-  labs(title="Usage of Invariant 'be' given a subject's age",
+  labs(title="Usage of Invariant Be given a subject's age when interviewed",
        x = "Age When Interviewed",
        y = "Ratio of be to lines")
 lm.age.be <- lm(Age ~ be.rat.lines, data = md.combo )
 summary(lm.age.be)
 
-ggsave('plots/UsageOf_Be_AgainstInterviewAge.png')
+ggsave('plots/UsageOf_Be_AgainstInterviewAge.png', width = 6, height = 3)
 
 # Plotting Birth Age and Usage of Be
 ggplot(md.combo, aes(x = Year.of.Birth, y = be.rat.lines, color=InterviewTime)) +
@@ -122,7 +122,7 @@ ggplot(md.combo, aes(x = Year.of.Birth, y = be.rat.lines, color=InterviewTime)) 
         x = "Year of Birth",
         y = "Useage of Be")
 
-ggsave('plots/UsageOf_Be_AgainstBirthYear.png')
+ggsave('plots/UsageOf_Be_AgainstBirthYear.png', width = 6, height = 3)
 
 lm.DOB.be <- lm(Age ~ be.rat.lines, data = md.combo )
 summary(lm.DOB.be)
@@ -135,7 +135,7 @@ ggplot(md.combo, aes(x = Year.of.Birth, y = red.rat.lines, color=InterviewTime))
        x = "Birth Year of Subject", 
        y = "Ratio of reduction by lines")
 
-ggsave('plots/UsageOf_Red_AgainstBirthYear.png')
+ggsave('plots/UsageOf_Red_AgainstBirthYear.png', width = 6, height = 3)
 
 ggplot(md.combo, aes(x = Age, y = red.rat.lines, color=InterviewTime)) +
   geom_point() +
@@ -147,29 +147,29 @@ ggplot(md.combo, aes(x = Age, y = red.rat.lines, color=InterviewTime)) +
 lm.DOB.red <- lm(Age ~ be.rat.lines, data = md.combo )
 summary(lm.DOB.red)
 
-ggsave('plots/UsageOf_Red_AgainstInterviewAge.png')
+ggsave('plots/UsageOf_Red_AgainstInterviewAge.png', width = 6, height = 3)
 
 # Plot use of Year of birth against aint usage
 ggplot(md.combo, aes(x = Year.of.Birth, y = aint.rat.lines, color=InterviewTime)) +
   geom_point() +
   geom_smooth(method = 'lm') +
-  labs(title="Usage of aint given a subject's age", 
+  labs(title="Usage of aint given a subject's year of birth", 
        x = "Birth Year of Subject", 
        y = "Ratio of 'aint' usage by lines")
 
-ggsave('plots/UsageOf_Aint_AgainstBirthYear.png')
+ggsave('plots/UsageOf_Aint_AgainstBirthYear.png', width = 6, height = 3)
 
 ggplot(md.combo, aes(x = Age, y = aint.rat.lines, color=InterviewTime)) +
   geom_point() +
   geom_smooth(method = 'lm') +
-  labs(title="Usage of aint given a subject's age", 
+  labs(title="Usage of aint given a subject's age when interviewed", 
        x = "Age of Subject when interviewed", 
        y = "Ratio of 'aint' usage by lines")
 
 lm.DOB.aint<- lm(Age ~ be.rat.lines, data = md.combo )
 summary(lm.DOB.aint)
 
-ggsave('plots/UsageOf_Aint_AgainstInterviewAge.png')
+ggsave('plots/UsageOf_Aint_AgainstInterviewAge.png', width = 6, height = 3)
 
 
 
